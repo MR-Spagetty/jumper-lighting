@@ -3,17 +3,74 @@
 #include <IoAbstraction.h>
 #include <IoAbstractionWire.h>
 
-#define COCKPIT_L_PIN 16
-#define RCOMPARTMENT_L_PIN 0
-#define CONSOLE_LEFT_L_PIN 2
-#define CONSOLE_RIGHT_L_PIN 14
-#define ENGINE_POD_L_PIN 17
+#define COCKPIT_L_PIN 14
+#define RCOMPARTMENT_L_PIN 12
+#define CONSOLE_LEFT_L_PIN 16
+#define CONSOLE_RIGHT_L_PIN 17
+#define ENGINE_POD_L_PIN 13
 
 MCP23017IoAbstraction DHD_EXP_1(0x20, &Wire);
 MCP23017IoAbstraction DHD_EXP_2(0x21, &Wire);
 
 const uint8_t NON_EXPANSION_DHD_PINS[] = {
-    12, 13, 15, 3, 1};
+    0, 2, 3, 15, 1};
+typedef struct DHDPinMapping
+{
+    byte loc : 2;
+    /* 0 = MCU pin
+    1 = expander 1
+    2 = expander 2
+    */
+    uint8_t pin;
+};
+const DHDPinMapping DHD_PINS[] = {
+    /*
+           00 01 02 __ 03 04 05
+        06 07 08 09 10 11 12 13 14
+
+        15 16 17 18 19 20 21 22 23
+           24 25 26 27 28 29 30
+              31 32 33 34 35
+                    36
+    */
+    {.loc = 1, .pin = 1},
+    {.loc = 1, .pin = 2},
+    {.loc = 1, .pin = 3},
+    {.loc = 1, .pin = 4},
+    {.loc = 1, .pin = 5},
+    {.loc = 1, .pin = 6},
+    {.loc = 1, .pin = 7},
+    {.loc = 1, .pin = 8},
+    {.loc = 1, .pin = 9},
+    {.loc = 1, .pin = 10},
+    {.loc = 1, .pin = 11},
+    {.loc = 1, .pin = 12},
+    {.loc = 1, .pin = 13},
+    {.loc = 1, .pin = 14},
+    {.loc = 1, .pin = 15},
+    {.loc = 2, .pin = 0},
+    {.loc = 2, .pin = 1},
+    {.loc = 2, .pin = 2},
+    {.loc = 2, .pin = 3},
+    {.loc = 2, .pin = 4},
+    {.loc = 2, .pin = 5},
+    {.loc = 2, .pin = 6},
+    {.loc = 2, .pin = 7},
+    {.loc = 2, .pin = 8},
+    {.loc = 2, .pin = 9},
+    {.loc = 2, .pin = 10},
+    {.loc = 2, .pin = 11},
+    {.loc = 2, .pin = 12},
+    {.loc = 2, .pin = 13},
+    {.loc = 2, .pin = 14},
+    {.loc = 2, .pin = 15},
+    {.loc = 0, .pin = NON_EXPANSION_DHD_PINS[0]},
+    {.loc = 0, .pin = NON_EXPANSION_DHD_PINS[1]},
+    {.loc = 0, .pin = NON_EXPANSION_DHD_PINS[2]},
+    {.loc = 0, .pin = NON_EXPANSION_DHD_PINS[3]},
+    {.loc = 0, .pin = NON_EXPANSION_DHD_PINS[4]},
+    {.loc = 1, .pin = 0}, // Engage
+};
 
 #define MAX_PARAMS 5
 #define DHD_MOD_ID 0b101
@@ -67,7 +124,6 @@ void handleDHD(Command command, byte param_values[])
     default:
         Serial.println("Invalid number of parameters for DHD command");
     }
-    
 }
 
 void setup()
